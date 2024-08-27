@@ -710,45 +710,45 @@ impl<'book, 'preprocessor> PreprocessChapter<'book, 'preprocessor> {
         const PANDOC_UNNUMBERED_CLASS: &str = "unnumbered";
         const PANDOC_UNLISTED_CLASS: &str = "unlisted";
 
-        if (self.preprocessor.ctx.pandoc)
-            .enable_extension(pandoc::Extension::Attributes)
-            .is_available()
-        {
-            if let HeadingLevel::H1 = level {
-                // Number the first H1 in each numbered chapter, mirroring mdBook
-                if self.encountered_h1 {
-                    classes.push(PANDOC_UNNUMBERED_CLASS.into());
-                    classes.push(PANDOC_UNLISTED_CLASS.into());
-                } else if self.chapter.number.is_none() {
-                    classes.push(PANDOC_UNNUMBERED_CLASS.into());
-                }
-                self.encountered_h1 = true;
-            } else {
-                classes.push(PANDOC_UNNUMBERED_CLASS.into());
-                classes.push(PANDOC_UNLISTED_CLASS.into());
-            }
-        }
+        // if (self.preprocessor.ctx.pandoc)
+        //     .enable_extension(pandoc::Extension::Attributes)
+        //     .is_available()
+        // {
+        //     if let HeadingLevel::H1 = level {
+        //         // Number the first H1 in each numbered chapter, mirroring mdBook
+        //         if self.encountered_h1 {
+        //             classes.push(PANDOC_UNNUMBERED_CLASS.into());
+        //             classes.push(PANDOC_UNLISTED_CLASS.into());
+        //         } else if self.chapter.number.is_none() {
+        //             classes.push(PANDOC_UNNUMBERED_CLASS.into());
+        //         }
+        //         self.encountered_h1 = true;
+        //     } else {
+        //         classes.push(PANDOC_UNNUMBERED_CLASS.into());
+        //         classes.push(PANDOC_UNLISTED_CLASS.into());
+        //     }
+        // }
 
-        let shift_smaller = |level| {
-            use HeadingLevel::*;
-            match level {
-                H1 => Some(H2),
-                H2 => Some(H3),
-                H3 => Some(H4),
-                H4 => Some(H5),
-                H5 => Some(H6),
-                H6 => None,
-            }
-        };
-        let Some(level) = iter::successors(Some(level), |level| shift_smaller(*level))
-            .nth(self.chapter.parent_names.len())
-        else {
-            log::warn!(
-                "Heading (level {level}) converted to paragraph in chapter: {}",
-                self.chapter.name
-            );
-            return None;
-        };
+        // let shift_smaller = |level| {
+        //     use HeadingLevel::*;
+        //     match level {
+        //         H1 => Some(H2),
+        //         H2 => Some(H3),
+        //         H3 => Some(H4),
+        //         H4 => Some(H5),
+        //         H5 => Some(H6),
+        //         H6 => None,
+        //     }
+        // };
+        // let Some(level) = iter::successors(Some(level), |level| shift_smaller(*level))
+        //     .nth(self.chapter.parent_names.len())
+        // else {
+        //     log::warn!(
+        //         "Heading (level {level}) converted to paragraph in chapter: {}",
+        //         self.chapter.name
+        //     );
+        //     return None;
+        // };
         Some((level, classes))
     }
 
